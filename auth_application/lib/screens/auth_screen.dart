@@ -15,6 +15,7 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
+  bool uploaded = false;
   bool authenticated = false;
   final ImagePicker _picker = ImagePicker();
   @override
@@ -28,34 +29,53 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      final XFile? photo =
-                          await _picker.pickImage(source: ImageSource.camera);
-                    } catch (e) {
-                      print(e.toString());
-                    }
-                  },
-                  child: const Text('Scan Voter ID')),
-              ElevatedButton(
-                onPressed: () async {
-                  final check = await LocalAuth.authenticate();
-                  if (authenticated) {
-                    Navigator.pushNamed(context, AugmentedVotingMachine.route);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error Authenticating'),
+              !uploaded
+                  ? ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          final XFile? photo = await _picker.pickImage(
+                              source: ImageSource.camera);
+                          setState(() {
+                            uploaded = true;
+                          });
+                        } catch (e) {
+                          print(e.toString());
+                        }
+                      },
+                      child: Text(
+                        'Scan Voter ID',
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Colors.white, fontSize: 20),
                       ),
-                    );
-                  }
-                  setState(() {
-                    authenticated = check;
-                  });
-                },
-                child: const Text('Authenticate Now'),
-              ),
+                    )
+                  : ElevatedButton(
+                      onPressed: () async {
+                        final check = await LocalAuth.authenticate();
+
+                        setState(() {
+                          authenticated = check;
+                        });
+                        if (authenticated) {
+                          Navigator.pushNamed(
+                              context, AugmentedVotingMachine.route);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error Authenticating'),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(
+                        'Authenticate Now',
+                        style: Theme.of(context)
+                            .textTheme
+                            .button!
+                            .copyWith(color: Colors.white, fontSize: 20),
+                      ),
+                    ),
 
               // if (authenticated)
               //   ElevatedButton(

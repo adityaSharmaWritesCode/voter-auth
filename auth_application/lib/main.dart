@@ -1,8 +1,6 @@
 import 'package:auth_application/screens/arvm_screen.dart';
 import 'package:auth_application/screens/auth_screen.dart';
-import 'package:auth_application/screens/scan_screen.dart';
-import 'package:auth_application/services/auth_services.dart';
-import 'package:auth_application/test.dart';
+import 'package:auth_application/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,9 +17,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AuthenticationScreen(),
+      home: const LoginScreen(),
       routes: {
-        ScanScreen.route: (context) => const ScanScreen(),
+        LoginScreen.route: (context) => const LoginScreen(),
         AuthenticationScreen.route: (context) => const AuthenticationScreen(),
         AugmentedVotingMachine.route: (context) =>
             const AugmentedVotingMachine(),
