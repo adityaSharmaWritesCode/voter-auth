@@ -5,6 +5,7 @@ import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
 import 'package:ar_flutter_plugin/models/ar_node.dart';
+import 'package:auth_application/screens/vote_confirm_screen.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,8 @@ class _AugmentedVotingMachineState extends State<AugmentedVotingMachine> {
   late ARObjectManager arObjectManager;
 
   ARNode? objectNode;
+
+  bool _buttonPressed = false;
 
   void viewCreate(
       ARSessionManager arSessionManager,
@@ -48,12 +51,15 @@ class _AugmentedVotingMachineState extends State<AugmentedVotingMachine> {
       var newNode = ARNode(
           type: NodeType.localGLTF2,
           uri: "assets/Cube/Cube.gltf",
-          scale: Vector3(0.2, 0.2, 0.2),
+          scale: Vector3(0.15, 0.15, 0.15),
           position: Vector3(0.0, 0.0, 0.0),
           rotation: Vector4(1.0, 0.0, 0.0, 0.0));
       bool? didAddLocalNode = await arObjectManager.addNode(newNode);
       objectNode = (didAddLocalNode!) ? newNode : null;
     }
+    setState(() {
+      _buttonPressed = true;
+    });
   }
 
   @override
@@ -84,10 +90,22 @@ class _AugmentedVotingMachineState extends State<AugmentedVotingMachine> {
             Positioned(
               left: 120,
               bottom: 50,
-              child: ElevatedButton(
-                onPressed: onButtonPress,
-                child: const Text("Add Voting Machine"),
-              ),
+              child: !_buttonPressed
+                  ? ElevatedButton(
+                      onPressed: onButtonPress,
+                      child: const Text("Add Voting Machine"),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        Navigator.popAndPushNamed(
+                            context, ConfirmVoteScreen.route);
+                        // setState(() {
+                        //   _buttonPressed = false;
+                        // });
+                      },
+                      child: const Text(
+                        "Confirm Vote",
+                      )),
             ),
           ],
         ),

@@ -40,6 +40,12 @@ dependencies:
   ar_flutter_plugin: ^0.7.3
   document_scanner_flutter: ^0.2.7
   image_picker: ^0.8.7
+  page_transition: ^2.0.9
+  google_fonts: ^4.0.3
+  pin_code_fields: ^7.4.0  
+  tab_container: ^2.0.0
+  cunning_document_scanner: ^1.1.2
+  flutter_mrz_scanner: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +74,7 @@ flutter:
     - assets/triangle.png
     - assets/Cube/
     - assets/Quad/
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

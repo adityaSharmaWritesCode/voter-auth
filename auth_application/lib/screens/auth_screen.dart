@@ -1,10 +1,10 @@
+import 'dart:io';
+
 import 'package:auth_application/screens/arvm_screen.dart';
 import 'package:auth_application/services/auth_services.dart';
-import 'package:auth_application/test.dart';
-import 'package:document_scanner_flutter/configs/configs.dart';
-import 'package:document_scanner_flutter/document_scanner_flutter.dart';
+import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_mrz_scanner/flutter_mrz_scanner.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   static const route = "/auth";
@@ -17,53 +17,104 @@ class AuthenticationScreen extends StatefulWidget {
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool uploaded = false;
   bool authenticated = false;
-  final ImagePicker _picker = ImagePicker();
+  List<String> _pictures = [];
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {}
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
-          title: Text('Voter Authentication Demo'),
+          title: const Text('Voter Authentication Demo'),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              Visibility(
+                visible: uploaded,
+                child: Column(
+                  children: [
+                    for (var picture in _pictures)
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: MediaQuery.of(context).size.width * 0.8,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(0),
+                          child: Image.file(
+                            File(picture),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
               !uploaded
                   ? ElevatedButton(
                       onPressed: () async {
+                        List<String> pictures;
                         try {
-                          final XFile? photo = await _picker.pickImage(
-                              source: ImageSource.camera);
+                          pictures =
+                              await CunningDocumentScanner.getPictures() ?? [];
+                          if (!mounted) return;
                           setState(() {
+                            _pictures = pictures;
                             uploaded = true;
                           });
                         } catch (e) {
-                          print(e.toString());
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(e.toString()),
+                            ),
+                          );
                         }
+                        // try {
+                        //   final XFile? photo = await _picker.pickImage(
+                        //       source: ImageSource.camera);
+                        //   if (photo != null) {
+                        //     setState(() {
+                        //       uploaded = true;
+                        //     });
+                        //   }
+                        // } catch (e) {
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //     SnackBar(
+                        //       content: Text(e.toString()),
+                        //     ),
+                        //   );
+                        // }
                       },
                       child: Text(
                         'Scan Voter ID',
                         style: Theme.of(context)
                             .textTheme
                             .button!
-                            .copyWith(color: Colors.white, fontSize: 20),
+                            .copyWith(fontSize: 20),
                       ),
                     )
                   : ElevatedButton(
                       onPressed: () async {
-                        final check = await LocalAuth.authenticate();
-
-                        setState(() {
-                          authenticated = check;
-                        });
-                        if (authenticated) {
-                          Navigator.pushNamed(
-                              context, AugmentedVotingMachine.route);
-                        } else {
+                        try {
+                          final check = await LocalAuth.authenticate();
+                          setState(() {
+                            authenticated = check;
+                          });
+                          if (authenticated) {
+                            Navigator.pushNamed(
+                                context, AugmentedVotingMachine.route);
+                          }
+                        } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Error Authenticating'),
+                              content: Text(e.toString()),
                             ),
                           );
                         }
@@ -73,7 +124,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         style: Theme.of(context)
                             .textTheme
                             .button!
-                            .copyWith(color: Colors.white, fontSize: 20),
+                            .copyWith(fontSize: 20),
                       ),
                     ),
 
