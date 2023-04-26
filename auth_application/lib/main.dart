@@ -2,10 +2,13 @@ import 'package:auth_application/screens/arvm_screen.dart';
 import 'package:auth_application/screens/auth_screen.dart';
 import 'package:auth_application/screens/vote_confirm_screen.dart';
 import 'package:auth_application/screens/login_screen.dart';
+import 'package:auth_application/widgets/barcode_scanner.dart';
 import 'package:auth_application/widgets/id_scanner.dart';
 import 'package:auth_application/widgets/code_confirm.dart';
 import 'package:auth_application/screens/home_screen.dart';
 import 'package:auth_application/widgets/login_input.dart';
+import 'package:auth_application/widgets/new_scanner.dart';
+import 'package:auth_application/widgets/test.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Mobile Voting Demo',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFDFA69B)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFDFA69B)),
         primarySwatch: Colors.blue,
       ),
       home: const HomeScreen(),
@@ -35,6 +38,12 @@ class MyApp extends StatelessWidget {
         ConfirmVoteScreen.route: (context) => const ConfirmVoteScreen(),
         CodeConfirmWidget.route: (context) => const CodeConfirmWidget(),
         idScanner.route: (context) => const idScanner(),
+        BarcodeScannerWithoutController.route: (context) =>
+            const BarcodeScannerWithoutController(),
+        BarcodeScannerWithScanWindow.route: (context) =>
+            const BarcodeScannerWithScanWindow(),
+        BarcodeScannerWithController.route: (context) =>
+            const BarcodeScannerWithController(),
         // LocalAndWebObjectsView.route: (context) =>
         //     const LocalAndWebObjectsView()
       },

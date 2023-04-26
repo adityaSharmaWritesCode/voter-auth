@@ -50,7 +50,7 @@ class _AugmentedVotingMachineState extends State<AugmentedVotingMachine> {
     } else {
       var newNode = ARNode(
           type: NodeType.localGLTF2,
-          uri: "assets/Cube/Cube.gltf",
+          uri: "assets/EVM/Cube.gltf",
           scale: Vector3(0.15, 0.15, 0.15),
           position: Vector3(0.0, 0.0, 0.0),
           rotation: Vector4(1.0, 0.0, 0.0, 0.0));
